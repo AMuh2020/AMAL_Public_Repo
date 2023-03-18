@@ -77,7 +77,7 @@ def check_win(board):
     pieces = 0
     for i in range(7):
         if board[0][i] == "  ":
-            print(i,"this")
+            #print(i,"this")
             break
         else:
             pieces +=1
@@ -90,10 +90,10 @@ def check_win(board):
 
 move_num = 0
 while True:
-    user = input()
+    user = int(input("enter a column(1-7)")) -1
     
-    if user == "/":
-        break
+    # if user == "/":
+    #     break
     if move_num % 2 == 0:
         board, msg = make_move(user,"🟡",board)
         move_num += 1
