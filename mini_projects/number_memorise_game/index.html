@@ -1,0 +1,240 @@
+<!-- 
+    
+░█████╗░███╗░░██╗  ░█████╗░███╗░░░███╗██╗░░░██╗██╗░░██╗██████╗░░█████╗░██████╗░██████╗░
+██╔══██╗████╗░██║  ██╔══██╗████╗░████║██║░░░██║██║░░██║╚════██╗██╔══██╗╚════██╗╚════██╗
+███████║██╔██╗██║  ███████║██╔████╔██║██║░░░██║███████║░░███╔═╝██║░░██║░░███╔═╝░░███╔═╝
+██╔══██║██║╚████║  ██╔══██║██║╚██╔╝██║██║░░░██║██╔══██║██╔══╝░░██║░░██║██╔══╝░░██╔══╝░░
+██║░░██║██║░╚███║  ██║░░██║██║░╚═╝░██║╚██████╔╝██║░░██║███████╗╚█████╔╝███████╗███████╗
+╚═╝░░╚═╝╚═╝░░╚══╝  ╚═╝░░╚═╝╚═╝░░░░░╚═╝░╚═════╝░╚═╝░░╚═╝╚══════╝░╚════╝░╚══════╝╚══════╝
+
+██████╗░██████╗░░█████╗░░░░░░██╗███████╗░█████╗░████████╗
+██╔══██╗██╔══██╗██╔══██╗░░░░░██║██╔════╝██╔══██╗╚══██╔══╝
+██████╔╝██████╔╝██║░░██║░░░░░██║█████╗░░██║░░╚═╝░░░██║░░░
+██╔═══╝░██╔══██╗██║░░██║██╗░░██║██╔══╝░░██║░░██╗░░░██║░░░
+██║░░░░░██║░░██║╚█████╔╝╚█████╔╝███████╗╚█████╔╝░░░██║░░░
+╚═╝░░░░░╚═╝░░╚═╝░╚════╝░░╚════╝░╚══════╝░╚════╝░░░░╚═╝░░░
+ -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number memorising game by AMuh2020</title>
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+        @keyframes incorrect{
+            0%{
+                background-color: white;
+                color: black;
+            }
+            30%{
+                background-color: red;
+                color: white;
+            }
+            100%{
+                background-color: white;
+                color: black;
+            }
+        }
+        @keyframes correct{
+            0%{
+                background-color: white;
+                color: black;
+            }
+            30%{
+                background-color: green;
+                color: white;
+            }
+            100%{
+                background-color: white;
+                color: black;
+            }
+        }
+        #container{
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+            padding: 3px;
+        }
+        .incorrect{
+            animation-name: incorrect;
+            animation-duration: 0.5s;
+            animation-iteration-count: 9999;
+            animation-play-state: paused;
+        }
+        .correct{
+            animation-name: correct;
+            animation-duration: 0.5s;
+            animation-iteration-count: 9999;
+            animation-play-state: paused;
+        }
+        #number{
+            font-size: 100px;
+            text-align: center;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+        }
+        #answer_form{
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        #input{
+            width: 100%;
+            height: 50px;
+            font-size: 30px;
+            text-align: center;
+        }
+        #timer_bar{
+            width: 100%;
+            height: 50px;
+            background-color: #ddd;
+            border-radius: 5px;
+            padding: 3px;
+        }
+        #countdown{
+            height: 100%;
+            background-color: grey;
+            width: 100%;
+            border-radius: 5px;
+            text-align: center;
+            line-height: 50px;
+            color: white;
+            font-size: 20px;
+            animation-name: countdown;
+            animation-duration: 5s;
+            animation-iteration-count: 1;
+            animation-play-state: paused;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div>
+            <h1>Number Memorise Game <span id="level"></span></h1>
+            <p>Enter the number you see in the box</p>
+            <div id="timer_bar">
+                <div id="countdown"></div>
+            </div>
+        </div>
+        <div id="number">0</div>
+        <form id="answer_form">
+            <input autofocus autocomplete="off" type="text" id="input">
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+    
+    <script>
+        // initialises the count and number variables
+        let level = 1;
+        let number = 0;
+        // generates the number to be memorised with a certain number of digits
+        function generateNumber(num_digits){
+            number = Math.floor(Math.random() * (Math.pow(10, num_digits)- Math.pow(10, num_digits-1)) + Math.pow(10, num_digits-1));
+            document.getElementById("number").innerHTML = number;
+            document.getElementById("level").innerHTML = "Level: " + level;
+        }
+
+        var intial = 3;
+        
+        // checks if the number entered is correct
+        function checknum(){
+            let input = document.getElementById("input").value;
+            if(input == number){
+                document.getElementById("number").classList.add("correct");
+                document.getElementById("number").style.animationPlayState = "running";
+                setTimeout(function(){
+                    document.getElementById("number").classList.remove("correct");
+                }, 500);
+                level = level + 1;
+                timer_function("stop");
+                document.getElementById("answer_form").style.visibility = "hidden";
+                intial = intial + 0.2;
+                timer_function("start");
+                generateNumber(level);
+            }
+            else{
+                document.getElementById("number").classList.add("incorrect");
+                document.getElementById("number").style.animationPlayState = "running";
+                setTimeout(function(){
+                    document.getElementById("number").classList.remove("incorrect");
+                }, 500);
+                alert("Wrong! The correct answer was " + number + ". You got to level " + level + ".");
+                level = 1;
+                begin();
+            }
+        }
+        // starts the game
+        function begin(){
+            document.getElementById("answer_form").style.visibility = "hidden";
+            generateNumber(level);
+            timer_function("start");
+        }
+        // wait for page to load
+        document.addEventListener("DOMContentLoaded", function(){
+
+            console.log("loaded");
+            
+            
+            begin();
+            
+            document.getElementById("answer_form").addEventListener("submit", (event) => {
+                event.preventDefault();
+                let val = document.getElementById("input").value
+                checknum(val);
+                document.getElementById("input").value = "";
+            });
+        });
+
+        // scale text so it doesnt overflow
+        // if ($('overflowingDiv').width() > $('container').width()) {
+        //     $('overflowingDiv').css('font-size', '20%');
+        // }
+
+        // hides the number and shows the input box
+        function hide_num_show_input(){
+            document.getElementById("number").innerHTML = "What was the number?";
+            document.getElementById("answer_form").style.visibility = "visible";
+            document.getElementById("input").focus();
+        }
+
+        // declaring the variable for the interval id of the timer
+        var timer;
+        // timer function
+        function timer_function(state){
+            if (state == "start"){
+                console.log("level: " + level);
+                let timeleft = intial;
+                timer = setInterval(function(){    
+                    if(timeleft <= 0){
+                        clearInterval(timer);
+                        document.getElementById("countdown").innerHTML = "Finished";
+                        console.log("time up");
+                        hide_num_show_input();
+                    } else {
+                        document.getElementById("countdown").innerHTML = timeleft.toFixed(1) + " seconds remaining";
+                        document.getElementById("countdown").style.width = ((timeleft)/intial)*100 + "%";
+                    }
+                    timeleft -= 0.1;
+                }, 100);
+            } else if (state == "stop"){
+                clearInterval(timer);
+            }
+        };
+    </script>
+</body>
+</html>
